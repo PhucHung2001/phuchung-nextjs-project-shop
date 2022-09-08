@@ -1,13 +1,13 @@
 import nc from "next-connect";
-// import Product from '../../models/Product';
-// import db from '../../utils/db';
-// import data from '../../utils/data';
-// import User from '../../models/User';
+import Product from "../../models/Product";
+import db from "../../utils/db";
+import data from "../../utils/data";
+import User from "../../models/User";
 
 const handler = nc();
-
+//   return res.s
 handler.get(async (req, res) => {
-  // return res.send({ message: 'already seeded' });
+  //   return res.send({ message: 'already seeded' });
   await db.connect();
   await User.deleteMany();
   await User.insertMany(data.users);
