@@ -89,15 +89,13 @@ export default function Layout({ title, description, children }) {
         <CssBaseline />
         <AppBar position="static" className={classes.navbar}>
           <Toolbar>
-            <NextLink href="/" passHref>
-              <a>
-                <Image
-                  src="https://res.cloudinary.com/luuphuchung2810/image/upload/v1661692607/avatar/PHMovie__1___1_-removebg-preview_mwcwny.png"
-                  width={100}
-                  height={80}
-                />
-              </a>
-            </NextLink>
+            <Image
+              src="https://res.cloudinary.com/luuphuchung2810/image/upload/v1661692607/avatar/PHMovie__1___1_-removebg-preview_mwcwny.png"
+              width={100}
+              height={80}
+              onClick={(e) => loginMenuCloseHandler(e, "/")}
+            />
+
             <div className={classes.grow}></div>
             <div>
               <Switch
