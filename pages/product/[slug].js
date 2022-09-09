@@ -144,7 +144,7 @@ export const getStaticPaths = async () => {
     paths: response.map((product) => ({
       params: { slug: product.slug.toString() },
     })),
-    fallback: false,
+    fallback: true,
   };
 };
 export const getStaticProps = async (context) => {
@@ -162,7 +162,7 @@ export const getStaticProps = async (context) => {
     props: {
       product: convertedSingleProducts,
     },
-    revalidate: 5,
+    revalidate: 1,
   };
 };
 // export async function getServerSideProps(context) {
