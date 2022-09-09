@@ -23,6 +23,12 @@ export default function ProductScreen(props) {
   const router = useRouter();
   const { dispatch, state } = useContext(Store);
   const { product } = props;
+  console.log(
+    "🚀 ~ file: [slug].js ~ line 26 ~ ProductScreen ~ product",
+    product
+  );
+  // const productObj = JSON.parse(product);
+
   if (!product) return <div>Product not found</div>;
   const addToCartHandler = async () => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
@@ -132,15 +138,47 @@ export default function ProductScreen(props) {
     </div>
   );
 }
-export async function getServerSideProps(context) {
-  const { params } = context;
-  const { slug } = params;
+export const getStaticPaths = async () => {
   await db.connect();
-  const product = await Product.findOne({ slug }).lean();
+  const response = await Product.find({});
+
   await db.disconnect();
   return {
-    props: {
-      product: db.convertDocToObj(product),
-    },
+    paths: response.map((product) => ({
+      params: { slug: product.slug.toString() },
+    })),
+    fallback: true,
   };
-}
+};
+export const getStaticProps = async (context) => {
+  const slug = context.params?.slug;
+
+  if (!slug) return { notFound: true };
+  await db.connect();
+
+  const product = await Product.findOne({ slug });
+  const convertedSingleProducts = JSON.parse(JSON.stringify(product));
+  // const data = await product.json();
+  // const data = await product.json();
+
+  await db.disconnect();
+
+  return {
+    props: {
+      product: convertedSingleProducts,
+    },
+    revalidate: 5,
+  };
+};
+// export async function getServerSideProps(context) {
+//   const { params } = context;
+//   const { slug } = params;
+//   await db.connect();
+//   const product = await Product.findOne({ slug }).lean();
+//   await db.disconnect();
+//   return {
+//     props: {
+//       product: db.convertDocToObj(product),
+//     },
+//   };
+// }
