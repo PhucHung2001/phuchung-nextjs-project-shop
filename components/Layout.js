@@ -89,7 +89,7 @@ export default function Layout({ title, description, children }) {
         <CssBaseline />
         <AppBar position="static" className={classes.navbar}>
           <Toolbar>
-            <NextLink href="/">
+            <NextLink href="/" passHref>
               <a>
                 <Image
                   src="https://res.cloudinary.com/luuphuchung2810/image/upload/v1661692607/avatar/PHMovie__1___1_-removebg-preview_mwcwny.png"
