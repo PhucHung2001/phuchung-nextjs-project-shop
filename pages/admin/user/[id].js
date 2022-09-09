@@ -217,7 +217,7 @@ function UserEdit({ params }) {
   );
 }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   return {
     props: { params },
   };

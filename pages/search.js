@@ -228,7 +228,7 @@ export default function Search(props) {
   );
 }
 
-export async function getStaticProps({ query }) {
+export async function getServerSideProps({ query }) {
   await db.connect();
   const pageSize = query.pageSize || PAGE_SIZE;
   const page = query.page || 1;
