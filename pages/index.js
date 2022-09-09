@@ -83,8 +83,8 @@ export async function getServerSideProps() {
   await db.disconnect();
   return {
     props: {
-      featuredProducts: JSON.parse(JSON.stringify(featuredProductsDocs)),
-      topRatedProducts: JSON.parse(JSON.topRatedProducts(topRatedProductsDocs)),
+      featuredProducts: featuredProductsDocs.map(db.convertDocToObj),
+      topRatedProducts: topRatedProductsDocs.map(db.convertDocToObj),
     },
   };
 }
