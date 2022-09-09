@@ -132,7 +132,7 @@ export default function ProductScreen(props) {
     </div>
   );
 }
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { params } = context;
   const { slug } = params;
   await db.connect();
