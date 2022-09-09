@@ -144,7 +144,7 @@ export const getStaticPaths = async () => {
     paths: response.map((product) => ({
       params: { slug: product.slug.toString() },
     })),
-    fallback: true,
+    fallback: false,
   };
 };
 export const getStaticProps = async (context) => {
