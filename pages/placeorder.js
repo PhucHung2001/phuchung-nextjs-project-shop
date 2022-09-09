@@ -25,7 +25,6 @@ import { useRouter } from "next/router";
 import useStyles from "../utils/styles";
 import CheckoutWizard from "../components/CheckoutWizard";
 import { useSnackbar } from "notistack";
-import { getError } from "../utils/error";
 import Cookies from "js-cookie";
 
 function PlaceOrder() {
@@ -52,7 +51,7 @@ function PlaceOrder() {
       router.push("/cart");
     }
   }, []);
-  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const { closeSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const placeOrderHandler = async () => {
     closeSnackbar();
@@ -81,7 +80,6 @@ function PlaceOrder() {
       router.push(`/order/${data._id}`);
     } catch (err) {
       setLoading(false);
-      enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
   return (

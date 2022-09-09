@@ -16,7 +16,6 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@material-ui/core";
-import { getError } from "../../../utils/error";
 import { Store } from "../../../utils/Store";
 import Layout from "../../../components/Layout";
 import useStyles from "../../../utils/styles";
@@ -86,7 +85,7 @@ function UserEdit({ params }) {
           dispatch({ type: "FETCH_SUCCESS" });
           setValue("name", data.name);
         } catch (err) {
-          dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+          dispatch({ type: "FETCH_FAIL", payload: err });
         }
       };
       fetchData();
@@ -109,8 +108,8 @@ function UserEdit({ params }) {
       enqueueSnackbar("User updated successfully", { variant: "success" });
       router.push("/admin/users");
     } catch (err) {
-      dispatch({ type: "UPDATE_FAIL", payload: getError(err) });
-      enqueueSnackbar(getError(err), { variant: "error" });
+      dispatch({ type: "UPDATE_FAIL", payload: err });
+      enqueueSnackbar("User updated error", { variant: "error" });
     }
   };
   return (

@@ -11,13 +11,12 @@ import {
   ThemeProvider,
   CssBaseline,
   Switch,
-  createMuiTheme,
   Badge,
   Button,
   Menu,
   MenuItem,
 } from "@material-ui/core";
-
+import { createTheme } from "@material-ui/core/styles";
 import Cookies from "js-cookie";
 
 import Image from "next/image";
@@ -39,7 +38,7 @@ export default function Layout({ title, description, children }) {
     const newDarkMode = !darkMode;
     Cookies.set("darkMode", newDarkMode ? "ON" : "OFF");
   };
-  const theme = createMuiTheme({
+  const theme = createTheme({
     typography: {
       h1: {
         fontSize: "1.6rem",

@@ -16,7 +16,6 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@material-ui/core";
-import { getError } from "../../../utils/error";
 import { Store } from "../../../utils/Store";
 import Layout from "../../../components/Layout";
 import useStyles from "../../../utils/styles";
@@ -94,7 +93,7 @@ function ProductEdit({ params }) {
           setValue("countInStock", data.countInStock);
           setValue("description", data.description);
         } catch (err) {
-          dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+          dispatch({ type: "FETCH_FAIL", payload: err });
         }
       };
       fetchData();
@@ -116,8 +115,8 @@ function ProductEdit({ params }) {
       setValue(imageField, data.secure_url);
       enqueueSnackbar("File uploaded successfully", { variant: "success" });
     } catch (err) {
-      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
-      enqueueSnackbar(getError(err), { variant: "error" });
+      dispatch({ type: "UPLOAD_FAIL", payload: err });
+      enqueueSnackbar("File uploaded error", { variant: "error" });
     }
   };
 
@@ -155,8 +154,8 @@ function ProductEdit({ params }) {
       enqueueSnackbar("Product updated successfully", { variant: "success" });
       router.push("/admin/products");
     } catch (err) {
-      dispatch({ type: "UPDATE_FAIL", payload: getError(err) });
-      enqueueSnackbar(getError(err), { variant: "error" });
+      dispatch({ type: "UPDATE_FAIL", payload: err });
+      enqueueSnackbar("Product updated error", { variant: "error" });
     }
   };
 

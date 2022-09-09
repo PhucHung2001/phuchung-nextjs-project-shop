@@ -17,6 +17,10 @@ export default function Home(props) {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const { topRatedProducts, featuredProducts } = props;
+  console.log(
+    "🚀 ~ file: index.js ~ line 20 ~ Home ~ featuredProducts",
+    featuredProducts
+  );
 
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);

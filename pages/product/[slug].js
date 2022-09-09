@@ -23,10 +23,7 @@ export default function ProductScreen(props) {
   const router = useRouter();
   const { dispatch, state } = useContext(Store);
   const { product } = props;
-  console.log(
-    "🚀 ~ file: [slug].js ~ line 26 ~ ProductScreen ~ product",
-    product
-  );
+
   // const productObj = JSON.parse(product);
 
   if (!product) return <div>Product not found</div>;

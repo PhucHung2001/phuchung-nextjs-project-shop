@@ -24,7 +24,6 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import useStyles from "../../utils/styles";
 import { useSnackbar } from "notistack";
-import { getError } from "../../utils/error";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 function reducer(state, action) {
@@ -103,7 +102,7 @@ function Order({ params }) {
         });
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+        dispatch({ type: "FETCH_FAIL", payload: err });
       }
     };
     if (
@@ -165,14 +164,14 @@ function Order({ params }) {
         dispatch({ type: "PAY_SUCCESS", payload: data });
         enqueueSnackbar("Order is paid", { variant: "success" });
       } catch (err) {
-        dispatch({ type: "PAY_FAIL", payload: getError(err) });
-        enqueueSnackbar(getError(err), { variant: "error" });
+        dispatch({ type: "PAY_FAIL", payload: err });
+        enqueueSnackbar("Error", { variant: "error" });
       }
     });
   }
 
   function onError(err) {
-    enqueueSnackbar(getError(err), { variant: "error" });
+    enqueueSnackbar(err, { variant: "error" });
   }
 
   async function deliverOrderHandler() {
@@ -188,8 +187,8 @@ function Order({ params }) {
       dispatch({ type: "DELIVER_SUCCESS", payload: data });
       enqueueSnackbar("Order is delivered", { variant: "success" });
     } catch (err) {
-      dispatch({ type: "DELIVER_FAIL", payload: getError(err) });
-      enqueueSnackbar(getError(err), { variant: "error" });
+      dispatch({ type: "DELIVER_FAIL", payload: err });
+      enqueueSnackbar("Order is error", { variant: "error" });
     }
   }
 
