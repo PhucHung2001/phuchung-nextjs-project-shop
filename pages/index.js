@@ -65,8 +65,7 @@ export default function Home(props) {
     </Layout>
   );
 }
-
-export async function getServerSideProps() {
+export async function getStaticProps() {
   await db.connect();
   const featuredProductsDocs = await Product.find(
     { isFeatured: true },
@@ -88,3 +87,25 @@ export async function getServerSideProps() {
     },
   };
 }
+// export async function getServerSideProps() {
+//   await db.connect();
+//   const featuredProductsDocs = await Product.find(
+//     { isFeatured: true },
+//     "-reviews"
+//   )
+//     .lean()
+//     .limit(6);
+//   const topRatedProductsDocs = await Product.find({}, "-reviews")
+//     .lean()
+//     .sort({
+//       rating: -1,
+//     })
+//     .limit(6);
+//   await db.disconnect();
+//   return {
+//     props: {
+//       featuredProducts: featuredProductsDocs.map(db.convertDocToObj),
+//       topRatedProducts: topRatedProductsDocs.map(db.convertDocToObj),
+//     },
+//   };
+// }

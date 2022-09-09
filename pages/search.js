@@ -7,34 +7,34 @@ import {
   MenuItem,
   Select,
   Typography,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
-import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
-import Layout from '../components/Layout';
-import db from '../utils/db';
-import Product from '../models/Product';
-import useStyles from '../utils/styles';
-import ProductItem from '../components/ProductItem';
-import { Store } from '../utils/Store';
-import axios from 'axios';
-import Rating from '@material-ui/lab/Rating';
-import { Pagination } from '@material-ui/lab';
+} from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { useRouter } from "next/router";
+import React, { useContext } from "react";
+import Layout from "../components/Layout";
+import db from "../utils/db";
+import Product from "../models/Product";
+import useStyles from "../utils/styles";
+import ProductItem from "../components/ProductItem";
+import { Store } from "../utils/Store";
+import axios from "axios";
+import Rating from "@material-ui/lab/Rating";
+import { Pagination } from "@material-ui/lab";
 
 const PAGE_SIZE = 3;
 
 const prices = [
   {
-    name: '$1 to $50',
-    value: '1-50',
+    name: "$1 to $50",
+    value: "1-50",
   },
   {
-    name: '$51 to $200',
-    value: '51-200',
+    name: "$51 to $200",
+    value: "51-200",
   },
   {
-    name: '$201 to $1000',
-    value: '201-1000',
+    name: "$201 to $1000",
+    value: "201-1000",
   },
 ];
 
@@ -44,12 +44,12 @@ export default function Search(props) {
   const classes = useStyles();
   const router = useRouter();
   const {
-    query = 'all',
-    category = 'all',
-    brand = 'all',
-    price = 'all',
-    rating = 'all',
-    sort = 'featured',
+    query = "all",
+    category = "all",
+    brand = "all",
+    price = "all",
+    rating = "all",
+    sort = "featured",
   } = router.query;
   const { products, countProducts, categories, brands, pages } = props;
 
@@ -106,11 +106,11 @@ export default function Search(props) {
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
-      window.alert('Sorry. Product is out of stock');
+      window.alert("Sorry. Product is out of stock");
       return;
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
-    router.push('/cart');
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    router.push("/cart");
   };
   return (
     <Layout title="Search">
@@ -177,18 +177,18 @@ export default function Search(props) {
         <Grid item md={9}>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
-              {products.length === 0 ? 'No' : countProducts} Results
-              {query !== 'all' && query !== '' && ' : ' + query}
-              {category !== 'all' && ' : ' + category}
-              {brand !== 'all' && ' : ' + brand}
-              {price !== 'all' && ' : Price ' + price}
-              {rating !== 'all' && ' : Rating ' + rating + ' & up'}
-              {(query !== 'all' && query !== '') ||
-              category !== 'all' ||
-              brand !== 'all' ||
-              rating !== 'all' ||
-              price !== 'all' ? (
-                <Button onClick={() => router.push('/search')}>
+              {products.length === 0 ? "No" : countProducts} Results
+              {query !== "all" && query !== "" && " : " + query}
+              {category !== "all" && " : " + category}
+              {brand !== "all" && " : " + brand}
+              {price !== "all" && " : Price " + price}
+              {rating !== "all" && " : Rating " + rating + " & up"}
+              {(query !== "all" && query !== "") ||
+              category !== "all" ||
+              brand !== "all" ||
+              rating !== "all" ||
+              price !== "all" ? (
+                <Button onClick={() => router.push("/search")}>
                   <CancelIcon />
                 </Button>
               ) : null}
@@ -218,7 +218,7 @@ export default function Search(props) {
           </Grid>
           <Pagination
             className={classes.mt1}
-            defaultPage={parseInt(query.page || '1')}
+            defaultPage={parseInt(query.page || "1")}
             count={pages}
             onChange={pageHandler}
           ></Pagination>
@@ -228,30 +228,30 @@ export default function Search(props) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getStaticProps({ query }) {
   await db.connect();
   const pageSize = query.pageSize || PAGE_SIZE;
   const page = query.page || 1;
-  const category = query.category || '';
-  const brand = query.brand || '';
-  const price = query.price || '';
-  const rating = query.rating || '';
-  const sort = query.sort || '';
-  const searchQuery = query.query || '';
+  const category = query.category || "";
+  const brand = query.brand || "";
+  const price = query.price || "";
+  const rating = query.rating || "";
+  const sort = query.sort || "";
+  const searchQuery = query.query || "";
 
   const queryFilter =
-    searchQuery && searchQuery !== 'all'
+    searchQuery && searchQuery !== "all"
       ? {
           name: {
             $regex: searchQuery,
-            $options: 'i',
+            $options: "i",
           },
         }
       : {};
-  const categoryFilter = category && category !== 'all' ? { category } : {};
-  const brandFilter = brand && brand !== 'all' ? { brand } : {};
+  const categoryFilter = category && category !== "all" ? { category } : {};
+  const brandFilter = brand && brand !== "all" ? { brand } : {};
   const ratingFilter =
-    rating && rating !== 'all'
+    rating && rating !== "all"
       ? {
           rating: {
             $gte: Number(rating),
@@ -260,30 +260,30 @@ export async function getServerSideProps({ query }) {
       : {};
   // 10-50
   const priceFilter =
-    price && price !== 'all'
+    price && price !== "all"
       ? {
           price: {
-            $gte: Number(price.split('-')[0]),
-            $lte: Number(price.split('-')[1]),
+            $gte: Number(price.split("-")[0]),
+            $lte: Number(price.split("-")[1]),
           },
         }
       : {};
 
   const order =
-    sort === 'featured'
+    sort === "featured"
       ? { featured: -1 }
-      : sort === 'lowest'
+      : sort === "lowest"
       ? { price: 1 }
-      : sort === 'highest'
+      : sort === "highest"
       ? { price: -1 }
-      : sort === 'toprated'
+      : sort === "toprated"
       ? { rating: -1 }
-      : sort === 'newest'
+      : sort === "newest"
       ? { createdAt: -1 }
       : { _id: -1 };
 
-  const categories = await Product.find().distinct('category');
-  const brands = await Product.find().distinct('brand');
+  const categories = await Product.find().distinct("category");
+  const brands = await Product.find().distinct("brand");
   const productDocs = await Product.find(
     {
       ...queryFilter,
@@ -292,7 +292,7 @@ export async function getServerSideProps({ query }) {
       ...brandFilter,
       ...ratingFilter,
     },
-    '-reviews'
+    "-reviews"
   )
     .sort(order)
     .skip(pageSize * (page - 1))
