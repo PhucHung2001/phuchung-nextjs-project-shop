@@ -94,6 +94,7 @@ export default function Layout({ title, description, children }) {
               width={100}
               height={80}
               onClick={(e) => loginMenuCloseHandler(e, "/")}
+              //aadssads
             />
 
             <div className={classes.grow}></div>
