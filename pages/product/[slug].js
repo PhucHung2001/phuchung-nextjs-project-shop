@@ -158,8 +158,6 @@ export const getStaticProps = async (context) => {
 
   const product = await Product.findOne({ slug });
   const convertedSingleProducts = JSON.parse(JSON.stringify(product));
-  // const data = await product.json();
-  // const data = await product.json();
 
   await db.disconnect();
 
