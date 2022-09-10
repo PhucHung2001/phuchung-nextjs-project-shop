@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 // import dynamic from "next/dynamic";
 // const Layout = dynamic(() => import("../../components/Layout"), { ssr: false });
 import NextLink from "next/link";
@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Card,
+  CircularProgress,
   Grid,
   Link,
   List,
@@ -23,115 +24,137 @@ export default function ProductScreen(props) {
   const router = useRouter();
   const { dispatch, state } = useContext(Store);
   const { product } = props;
+  const [loading, setloading] = useState(false);
 
   // const productObj = JSON.parse(product);
 
   if (!product) return <div>Product not found</div>;
   const addToCartHandler = async () => {
+    setloading(true);
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
+      setloading(false);
       window.alert("Sorry. Product is out of stock");
+
       return;
     }
     dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    setloading(false);
     router.push("/cart");
   };
 
   return (
     <div>
-      <Layout ttile={product.name} description={product.description}>
-        <div>
-          <NextLink href="/">
-            <Link>
-              <Box
-                style={{
-                  display: "flex",
-                  margin: "10px 0px",
-                  cursor: "pointer",
-                }}
-              >
-                <Box>Back to home</Box>
-              </Box>
-            </Link>
-          </NextLink>
-          <Grid container spacing={1}>
-            <Grid item md={6} xs={12}>
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={640}
-                height={640}
-                layout="responsive"
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <List>
-                <ListItem>
-                  <Typography component="h1" variant="h5">
-                    {product.name}
-                  </Typography>
-                </ListItem>
-                <ListItem>
-                  <Typography>Category: {product.category}</Typography>
-                </ListItem>
-                <ListItem>
-                  <Typography>Brand: {product.brand}</Typography>
-                </ListItem>
-
-                <ListItem>
-                  <Typography>
-                    Rating: ${product.rating} (10) reviews
-                  </Typography>
-                </ListItem>
-                <ListItem>
-                  <Typography>Description: {product.description}</Typography>
-                </ListItem>
-              </List>
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Card>
+      {loading ? (
+        <div
+          style={{
+            opacity: 0.3,
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </div>
+      ) : (
+        <Layout ttile={product.name} description={product.description}>
+          <div>
+            <NextLink href="/">
+              <Link>
+                <Box
+                  style={{
+                    display: "flex",
+                    margin: "10px 0px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Box>Back to home</Box>
+                </Box>
+              </Link>
+            </NextLink>
+            <Grid container spacing={1}>
+              <Grid item md={6} xs={12}>
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={640}
+                  height={640}
+                  layout="responsive"
+                />
+              </Grid>
+              <Grid item md={3} xs={12}>
                 <List>
                   <ListItem>
-                    <Grid container>
-                      <Grid item xs={6}>
-                        <Typography>Price </Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography> {product.price}</Typography>
-                      </Grid>
-                    </Grid>
+                    <Typography component="h1" variant="h5">
+                      {product.name}
+                    </Typography>
                   </ListItem>
                   <ListItem>
-                    <Grid container>
-                      <Grid item xs={6}>
-                        <Typography>Status </Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography>
-                          {" "}
-                          {product.countInStock > 0 ? "In stock" : "Out stock"}
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    <Typography>Category: {product.category}</Typography>
                   </ListItem>
                   <ListItem>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      onClick={addToCartHandler}
-                    >
-                      Add to cart
-                    </Button>
+                    <Typography>Brand: {product.brand}</Typography>
+                  </ListItem>
+
+                  <ListItem>
+                    <Typography>
+                      Rating: ${product.rating} (10) reviews
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography>Description: {product.description}</Typography>
                   </ListItem>
                 </List>
-              </Card>
+              </Grid>
+              <Grid item md={3} xs={12}>
+                <Card>
+                  <List>
+                    <ListItem>
+                      <Grid container>
+                        <Grid item xs={6}>
+                          <Typography>Price </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Typography> {product.price}</Typography>
+                        </Grid>
+                      </Grid>
+                    </ListItem>
+                    <ListItem>
+                      <Grid container>
+                        <Grid item xs={6}>
+                          <Typography>Status </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Typography>
+                            {" "}
+                            {product.countInStock > 0
+                              ? "In stock"
+                              : "Out stock"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </ListItem>
+                    <ListItem>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={addToCartHandler}
+                      >
+                        Add to cart
+                      </Button>
+                    </ListItem>
+                  </List>
+                </Card>
+              </Grid>
             </Grid>
-          </Grid>
-        </div>
-      </Layout>
+          </div>
+        </Layout>
+      )}
     </div>
   );
 }
