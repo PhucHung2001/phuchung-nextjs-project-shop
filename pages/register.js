@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { Store } from "../utils/Store";
 import useStyles from "../utils/styles";
@@ -27,6 +27,7 @@ export default function Register() {
   const router = useRouter();
   const { redirect } = router.query;
   const { state, dispatch } = useContext(Store);
+
   const { userInfo } = state;
   useEffect(() => {
     if (userInfo) {
@@ -37,6 +38,7 @@ export default function Register() {
   const classes = useStyles();
   const submitHandler = async ({ name, email, password, confirmPassword }) => {
     closeSnackbar();
+
     if (password !== confirmPassword) {
       enqueueSnackbar("Passwords don't match", { variant: "error" });
       return;
@@ -49,9 +51,10 @@ export default function Register() {
       });
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", data);
+
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar("Register Failed", {
+      enqueueSnackbar(err.response.data.message, {
         variant: "error",
       });
     }
