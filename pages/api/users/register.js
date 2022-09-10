@@ -8,8 +8,7 @@ const handler = nc();
 
 handler.post(async (req, res) => {
   await db.connect();
-  const { name, email, password } = req.body;
-  const userExist = User.findOne({ email });
+  const userExist = await User.findOne({ email: req.body.email });
   if (userExist) {
     return res.status(401).send({ message: "This email already exists!" });
   }
