@@ -33,6 +33,7 @@ export default function ProductScreen(props) {
   const { userInfo } = state;
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingReview, setLoadingReviews] = useState(false);
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -63,9 +64,12 @@ export default function ProductScreen(props) {
   };
   const fetchReviews = async () => {
     try {
+      setLoadingReviews(true);
       const { data } = await axios.get(`/api/products/${product._id}/reviews`);
       setReviews(data);
+      setLoadingReviews(false);
     } catch (err) {
+      setLoadingReviews(false);
       enqueueSnackbar(err.response.data.message, { variant: "error" });
     }
   };
@@ -206,6 +210,7 @@ export default function ProductScreen(props) {
               </Typography>
             </ListItem>
             {reviews.length === 0 && <ListItem>No review</ListItem>}
+            {loadingReview && <CircularProgress />}
             {reviews.map((review) => (
               <ListItem key={review._id}>
                 <Grid container>
