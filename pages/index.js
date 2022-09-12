@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import NextLink from "next/link";
-import { Grid, Link, Typography } from "@material-ui/core";
+import { Container, Grid, Link, Typography } from "@material-ui/core";
 import Layout from "../components/Layout";
 import db from "../utils/db";
 import Product from "../models/Product";
@@ -30,36 +30,41 @@ export default function Home(props) {
     router.push("/cart");
   };
   return (
-    <Layout>
-      <Carousel className={classes.mt1} animation="slide">
-        {featuredProducts.map((product) => (
-          <NextLink
-            key={product._id}
-            href={`/product/${product.slug}`}
-            passHref
-          >
-            <Link>
-              <img
-                src={product.featuredImage}
-                alt={product.name}
-                className={classes.featuredImage}
-              ></img>
-            </Link>
-          </NextLink>
-        ))}
-      </Carousel>
-      <Typography variant="h2">Popular Products</Typography>
-      <Grid container spacing={3}>
-        {topRatedProducts.map((product) => (
-          <Grid item md={4} key={product.name}>
-            <ProductItem
-              product={product}
-              addToCartHandler={addToCartHandler}
-            />
+    <>
+      <Layout>
+        <Carousel className={classes.mt1} animation="slide">
+          {featuredProducts.map((product) => (
+            <NextLink
+              key={product._id}
+              href={`/product/${product.slug}`}
+              passHref
+            >
+              <Link>
+                <img
+                  src={product.featuredImage}
+                  alt={product.name}
+                  className={classes.featuredImage}
+                  width="120%"
+                ></img>
+              </Link>
+            </NextLink>
+          ))}
+        </Carousel>
+        <Container>
+          <Typography variant="h2">Popular Products</Typography>
+          <Grid container spacing={3}>
+            {topRatedProducts.map((product) => (
+              <Grid item md={4} key={product.name}>
+                <ProductItem
+                  product={product}
+                  addToCartHandler={addToCartHandler}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-    </Layout>
+        </Container>
+      </Layout>
+    </>
   );
 }
 export async function getStaticProps() {
