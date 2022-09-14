@@ -54,7 +54,7 @@ export default function Login() {
       router.push(redirect || "/");
     } catch (err) {
       setloading(false);
-      enqueueSnackbar("Login failed", {
+      enqueueSnackbar(err.response.data.message, {
         variant: "error",
       });
     }

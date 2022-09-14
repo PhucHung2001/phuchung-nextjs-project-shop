@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Head from "next/head";
 
 import NextLink from "next/link";
@@ -15,24 +15,48 @@ import {
   Button,
   Menu,
   MenuItem,
+  Box,
+  IconButton,
+  Drawer,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Cancel";
+import SearchIcon from "@material-ui/icons/Search";
 import { createTheme } from "@material-ui/core/styles";
 import Cookies from "js-cookie";
-
+import MenuIcon from "@material-ui/icons/Menu";
 import Image from "next/image";
 import useStyles from "../utils/styles";
 import { Store } from "../utils/Store";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
+import axios from "axios";
 export default function Layout({ title, description, children }) {
   const classes = useStyles();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
+  const [sidbarVisible, setSidebarVisible] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [anchorEl, setanchorEl] = useState(null);
   const { darkMode, userInfo } = state;
   const cartLength = state.cart.cartItems.length;
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get(`/api/products/categories`);
+      setCategories(data);
+    } catch (err) {
+      enqueueSnackbar("Fetch categories failed!", { variant: "error" });
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  console.log(categories);
   const handleChangeDarkMode = () => {
     dispatch({ type: darkMode ? "DARK_MODE_OFF" : "DARK_MODE_ON" });
     const newDarkMode = !darkMode;
@@ -78,6 +102,13 @@ export default function Layout({ title, description, children }) {
     enqueueSnackbar("Logout success", { variant: "success" });
     router.push("/");
   };
+  const sidebarOpenHandler = () => {
+    setSidebarVisible(true);
+  };
+  const sidebarCloseHandler = () => {
+    setSidebarVisible(false);
+  };
+
   return (
     <div>
       <Head>
@@ -88,6 +119,56 @@ export default function Layout({ title, description, children }) {
         <CssBaseline />
         <AppBar position="static" className={classes.navbar}>
           <Toolbar>
+            <Box display="flex" alignItems="center">
+              <IconButton
+                edge="start"
+                aria-label="open drawer"
+                onClick={sidebarOpenHandler}
+                className={classes.menuButton}
+                // sx={{ display: { xs: "block", sm: "none" } }}
+              >
+                <MenuIcon className={classes.navbarButton} />
+              </IconButton>
+            </Box>
+            <Drawer
+              anchor="left"
+              open={sidbarVisible}
+              onClose={sidebarCloseHandler}
+            >
+              <List>
+                <ListItem>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography>Shopping by category</Typography>
+                    <IconButton
+                      aria-label="close"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <CancelIcon />
+                    </IconButton>
+                  </Box>
+                </ListItem>
+                <Divider light />
+                {categories.map((category) => (
+                  <NextLink
+                    key={category}
+                    href={`/search?category=${category}`}
+                    passHref
+                  >
+                    <ListItem
+                      button
+                      component="a"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <ListItemText primary={category}></ListItemText>
+                    </ListItem>
+                  </NextLink>
+                ))}
+              </List>
+            </Drawer>
             <NextLink href="/" passHref>
               <Link>
                 <Image
