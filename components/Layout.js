@@ -22,6 +22,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  InputBase,
 } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SearchIcon from "@material-ui/icons/Search";
@@ -41,6 +42,7 @@ export default function Layout({ title, description, children }) {
   const { enqueueSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
   const [sidbarVisible, setSidebarVisible] = useState(false);
+  const [query, setQuery] = useState("");
   const [categories, setCategories] = useState([]);
   const [anchorEl, setanchorEl] = useState(null);
   const { darkMode, userInfo } = state;
@@ -108,6 +110,13 @@ export default function Layout({ title, description, children }) {
   const sidebarCloseHandler = () => {
     setSidebarVisible(false);
   };
+  const submitHandler = (e) => {
+    e.preventDefault();
+    router.push(`/search?query=${query}`);
+  };
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
 
   return (
     <div>
@@ -169,6 +178,7 @@ export default function Layout({ title, description, children }) {
                 ))}
               </List>
             </Drawer>
+
             <NextLink href="/" passHref>
               <Link>
                 <Image
@@ -178,6 +188,23 @@ export default function Layout({ title, description, children }) {
                 />
               </Link>
             </NextLink>
+            <div className={classes.searchSection}>
+              <form onSubmit={submitHandler} className={classes.searchForm}>
+                <InputBase
+                  name="query"
+                  className={classes.searchInput}
+                  placeholder="Search products"
+                  onChange={queryChangeHandler}
+                />
+                <IconButton
+                  type="submit"
+                  className={classes.iconButton}
+                  aria-label="search"
+                >
+                  <SearchIcon />
+                </IconButton>
+              </form>
+            </div>
 
             <div className={classes.grow}></div>
             <div>
